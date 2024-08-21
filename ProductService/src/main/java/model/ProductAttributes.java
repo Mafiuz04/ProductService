@@ -7,19 +7,19 @@ import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Data
-public class Product {
+public class ProductAttributes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private ProductTypes type;
-    @ManyToMany
-    private Set<ProductAttributes> attributes = new HashSet<>();
+    private Accessories accessories;
+    private Colors colors;
+    private PhoneBatteryCapacity batteryCapacity;
+    private RAMs ram;
+    @ManyToMany(mappedBy = "attributes")
+    private Set<Product> products = new HashSet<>();
 }
