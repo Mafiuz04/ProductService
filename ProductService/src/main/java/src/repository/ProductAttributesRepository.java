@@ -1,7 +1,6 @@
-package repository;
+package src.repository;
 
-import model.Product;
-import model.ProductAttributes;
+import src.model.ProductAttributes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
