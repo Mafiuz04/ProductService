@@ -23,7 +23,11 @@ public class ProductService {
     private final ProductAttributesRepository attributesRepository;
 
     @Transactional
-    public ProductDto addProduct(ProductDto product) {
+    public ProductDto addProduct(ProductDto product) throws ProductServiceException {
+        boolean itExistingProduct = productRepository.isItExistingProduct(product.getName(), product.getPrice(), ProductTypes.valueOf(product.getType()));
+        if(itExistingProduct) {
+            throw new ProductServiceException("Product already exist in shop", HttpStatus.BAD_REQUEST);
+        }
         Product entity = productMapper.toEntity(product);
         productRepository.save(entity);
         return productMapper.toDto(entity);
