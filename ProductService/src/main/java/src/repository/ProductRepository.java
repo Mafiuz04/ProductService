@@ -5,10 +5,9 @@ import org.springframework.data.repository.query.Param;
 import src.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import src.model.ProductAttributes;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -24,4 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE p.type = :productType " +
             "AND a.type = :attributeType")
     boolean existsByProductTypeAndAttributeType(@Param("productType") String productType, @Param("attributeType") String attributeType);
+
+
+    @Query("SELECT p FROM Product p JOIN p.attributes a WHERE a.attributeName = :attributeName AND a.attributeValue = :attributeValue AND p.type = :type")
+    List<Product> findProductsByAttribute(@Param("attributeName") String attributeName,
+                                          @Param("attributeValue") String attributeValue,
+                                          @Param("type") String type);
 }

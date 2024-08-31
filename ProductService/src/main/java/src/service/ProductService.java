@@ -42,7 +42,7 @@ public class ProductService {
                 .orElseThrow(() -> new ProductServiceException("The is no product with given ID", HttpStatus.BAD_REQUEST));
         product.setName(updatedProduct.getName());
         product.setPrice(updatedProduct.getPrice());
-        product.setType(product.getType());
+        product.setType(updatedProduct.getType());
         productRepository.saveAndFlush(product);
         return productMapper.toDto(product);
     }
@@ -68,6 +68,9 @@ public class ProductService {
 
     @Transactional
     public ProductAttributesDTO createAttribute(ProductAttributesDTO attribute) {
+        if(attributesRepository.existsByAttributes(attribute.getType(),attribute.getAttributeName(),attribute.getAttributeValue())){
+            throw new ProductServiceException("ProductAttribute already exist in shop", HttpStatus.BAD_REQUEST);
+        }
         attribute.setType(attribute.getType().toLowerCase());
         ProductAttributes entity = productAttributesMapper.toEntity(attribute);
         ProductAttributes savedAttribute = attributesRepository.save(entity);
@@ -103,7 +106,11 @@ public class ProductService {
     public void deleteAttribute(Long id) {
         ProductAttributes attribute = attributesRepository.findById(id)
                 .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
-        productRepository.existsByProductTypeAndAttributeType(attribute.getType(),attribute.getType());
+        List<Product> productsByAttribute = productRepository.findProductsByAttribute(attribute.getAttributeName(), attribute.getAttributeValue(), attribute.getType());
+        for (Product product : productsByAttribute) {
+            product.getAttributes().removeIf(a -> a.getId().equals(id));
+            productRepository.saveAndFlush(product);
+        }
         attributesRepository.deleteById(id);
         ResponseEntity.accepted();
     }
