@@ -93,7 +93,7 @@ public class ProductService {
                 .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
         if(!isItTheSameType(product,attribute)){
             throw new ProductServiceException("You can not add this attribute,wrong type", HttpStatus.BAD_REQUEST);
-        };
+        }
         Set<ProductAttributes> attributes = product.getAttributes();
         attributes.add(attribute);
         Set<Product> products = attribute.getProducts();

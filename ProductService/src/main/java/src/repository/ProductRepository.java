@@ -17,14 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                 @Param("price") BigDecimal price,
                                 @Param("type") String type);
 
-    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
-            "FROM Product p " +
-            "JOIN p.attributes a " +
-            "WHERE p.type = :productType " +
-            "AND a.type = :attributeType")
-    boolean existsByProductTypeAndAttributeType(@Param("productType") String productType, @Param("attributeType") String attributeType);
-
-
     @Query("SELECT p FROM Product p JOIN p.attributes a WHERE a.attributeName = :attributeName AND a.attributeValue = :attributeValue AND p.type = :type")
     List<Product> findProductsByAttribute(@Param("attributeName") String attributeName,
                                           @Param("attributeValue") String attributeValue,
