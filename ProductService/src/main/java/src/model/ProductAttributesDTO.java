@@ -1,24 +1,17 @@
 package src.model;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class ProductAttributesDTO {
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private Accessories accessories;
-    @Enumerated(EnumType.STRING)
-    private Colors colors;
-    @Enumerated(EnumType.STRING)
-    private PhoneBatteryCapacity batteryCapacity;
-    @Enumerated(EnumType.STRING)
-    private RAMs ram;
-    @Enumerated(EnumType.STRING)
-    private Processors processor;
-
-    private Set<Long> productsId;
+    private String type;
+    private String attributeName;
+    private String attributeValue;
 }

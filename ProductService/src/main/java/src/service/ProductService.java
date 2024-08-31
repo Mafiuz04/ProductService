@@ -2,6 +2,7 @@ package src.service;
 
 import src.exception.ProductServiceException;
 import lombok.AllArgsConstructor;
+import src.mapper.ProductAttributesMapper;
 import src.mapper.ProductMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,35 +20,20 @@ import java.util.*;
 public class ProductService {
 
     private final ProductMapper productMapper;
+    private final ProductAttributesMapper productAttributesMapper;
     private final ProductRepository productRepository;
     private final ProductAttributesRepository attributesRepository;
 
     @Transactional
     public ProductDto addProduct(ProductDto product) throws ProductServiceException {
-        boolean itExistingProduct = productRepository.isItExistingProduct(product.getName(), product.getPrice(), ProductTypes.valueOf(product.getType()));
-        if(itExistingProduct) {
+        boolean itExistingProduct = productRepository.isItExistingProduct(product.getName(), product.getPrice(), product.getType());
+        if (itExistingProduct) {
             throw new ProductServiceException("Product already exist in shop", HttpStatus.BAD_REQUEST);
         }
+        product.setType(product.getType().toLowerCase());
         Product entity = productMapper.toEntity(product);
         productRepository.save(entity);
         return productMapper.toDto(entity);
-    }
-
-    @Transactional
-    public ProductDto addAttributes(Long id, ProductAttributes attributes) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductServiceException("Product with given Id does not exist", HttpStatus.BAD_REQUEST));
-        ProductAttributes attribute = createAttributes(attributes, product.getType());
-        Set<ProductAttributes> attributes1 = new HashSet<>();
-        attributes1.add(attribute);
-        product.setAttributes(attributes1);
-        productRepository.saveAndFlush(product);
-        return productMapper.toDto(product);
-    }
-
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
-        ResponseEntity.accepted();
     }
 
     @Transactional
@@ -72,44 +58,57 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
-    public List<Object> getAttributes(String type) {
-        return getListOfAttributes(type);
+    @Transactional
+    public void deleteProduct(Long id) {
+        productRepository.findById(id)
+                .orElseThrow(() -> new ProductServiceException("The is no product with given ID", HttpStatus.BAD_REQUEST));
+        productRepository.deleteById(id);
+        ResponseEntity.accepted();
     }
 
-    private List<Object> getListOfAttributes(String type) {
-        ProductTypes productType = ProductTypes.valueOf(type.toUpperCase());
-        ArrayList<Object> attributes = new ArrayList<>();
-        if (ProductTypes.SMARTPHONE.equals(productType)) {
-            List<Colors> colors = Arrays.stream(Colors.values()).toList();
-            List<PhoneBatteryCapacity> batteryCapacities = Arrays.stream(PhoneBatteryCapacity.values()).toList();
-            List<Accessories> accessories = Arrays.stream(Accessories.values()).toList();
-            attributes.add(colors);
-            attributes.add(batteryCapacities);
-            attributes.add(accessories);
-            return attributes;
-        } else if (ProductTypes.COMPUTER.equals(productType)) {
-            List<RAMs> rams = Arrays.stream(RAMs.values()).toList();
-            List<Processors> processors = Arrays.stream(Processors.values()).toList();
-            attributes.add(rams);
-            attributes.add(processors);
-            return attributes;
+    @Transactional
+    public ProductAttributesDTO createAttribute(ProductAttributesDTO attribute) {
+        attribute.setType(attribute.getType().toLowerCase());
+        ProductAttributes entity = productAttributesMapper.toEntity(attribute);
+        ProductAttributes savedAttribute = attributesRepository.save(entity);
+        return productAttributesMapper.toDto(savedAttribute);
+    }
+
+    public List<ProductAttributesDTO> getListOfAttributes(String type) {
+        List<ProductAttributes> attributesByProductType = attributesRepository.findByType(type);
+        return productAttributesMapper.setToDTO(attributesByProductType);
+    }
+
+    @Transactional
+    public ProductDto addAttributeToProduct(Long productId, Long attributeId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductServiceException("Product with given Id does not exist", HttpStatus.BAD_REQUEST));
+        if (!product.getAttributes().isEmpty()) {
+            throw new ProductServiceException("Product has assigned attributes", HttpStatus.BAD_REQUEST);
         }
-        return Collections.emptyList();
+        ProductAttributes attribute = attributesRepository.findById(attributeId)
+                .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
+        if(!isItTheSameType(product,attribute)){
+            throw new ProductServiceException("You can not add this attribute,wrong type", HttpStatus.BAD_REQUEST);
+        };
+        Set<ProductAttributes> attributes = product.getAttributes();
+        attributes.add(attribute);
+        Set<Product> products = attribute.getProducts();
+        products.add(product);
+        attributesRepository.saveAndFlush(attribute);
+        productRepository.saveAndFlush(product);
+        return productMapper.toDto(product);
     }
 
-    private ProductAttributes createAttributes(ProductAttributes attributes, ProductTypes type) {
-        ProductAttributes attribute = new ProductAttributes();
-        if (ProductTypes.SMARTPHONE.equals(type)) {
-            attribute.setColors(attributes.getColors());
-            attribute.setBatteryCapacity(attributes.getBatteryCapacity());
-            attribute.setAccessories(attributes.getAccessories());
-        } else if (ProductTypes.COMPUTER.equals(type)) {
-            attribute.setProcessor(attributes.getProcessor());
-            attribute.setRam(attributes.getRam());
-        } else if (ProductTypes.ELECTRONICS.equals(type)) {
-            throw new ProductServiceException("Electronic products do not have any attributes", HttpStatus.BAD_REQUEST);
-        }
-        return attributesRepository.save(attribute);
+    public void deleteAttribute(Long id) {
+        ProductAttributes attribute = attributesRepository.findById(id)
+                .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
+        productRepository.existsByProductTypeAndAttributeType(attribute.getType(),attribute.getType());
+        attributesRepository.deleteById(id);
+        ResponseEntity.accepted();
     }
 
+    private boolean isItTheSameType(Product product,ProductAttributes attribute){
+        return product.getType().equals(attribute.getType());
+    }
 }

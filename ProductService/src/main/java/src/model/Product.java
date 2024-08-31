@@ -1,23 +1,28 @@
 package src.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(nullable = false)
     private BigDecimal price;
-    @Enumerated(EnumType.STRING)
-    private ProductTypes type;
+    @Column(nullable = false)
+    private String type;
     @ManyToMany
     @JoinTable(
             name = "product_attribute",

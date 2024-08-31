@@ -1,27 +1,27 @@
 package src.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class ProductAttributes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private Accessories accessories;
-    @Enumerated(EnumType.STRING)
-    private Colors colors;
-    @Enumerated(EnumType.STRING)
-    private PhoneBatteryCapacity batteryCapacity;
-    @Enumerated(EnumType.STRING)
-    private RAMs ram;
-    @Enumerated(EnumType.STRING)
-    private Processors processor;
+    @Column(nullable = false)
+    private String type;
+    @Column(nullable = false)
+    private String attributeName;
+    @Column(nullable = false)
+    private String attributeValue;
     @ManyToMany(mappedBy = "attributes")
     private Set<Product> products = new HashSet<>();
 

@@ -1,11 +1,12 @@
 package src.controller;
 
 import lombok.RequiredArgsConstructor;
-import src.model.ProductAttributes;
-import src.model.ProductDto;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import src.model.ProductDto;
+import src.model.ProductAttributesDTO;
 import src.service.ProductService;
 
 import java.util.List;
@@ -20,17 +21,6 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto addProduct(@RequestBody ProductDto product) {
         return productService.addProduct(product);
-    }
-
-    @PatchMapping("/{id}")
-    public ProductDto addAttributes(@PathVariable Long id, @RequestBody ProductAttributes attributes) {
-        return productService.addAttributes(id, attributes);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
     }
 
     @PutMapping("/{id}")
@@ -48,8 +38,31 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @GetMapping("/types/{type}")
-    public List<Object> getAttributes(@PathVariable String type) {
-        return productService.getAttributes(type);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
     }
+
+    @PostMapping("/attributes")
+    public ProductAttributesDTO addAttribute( @RequestBody ProductAttributesDTO attributes) {
+        return productService.createAttribute(attributes);
+    }
+
+    @GetMapping("/types/{type}")
+    public List<ProductAttributesDTO> getAttributes(@PathVariable String type) {
+        return productService.getListOfAttributes(type);
+    }
+
+    @PatchMapping("/{productId}/{attributeId}")
+    public ProductDto addAttributeToProduct(@PathVariable Long productId,@PathVariable Long attributeId){
+        return productService.addAttributeToProduct(productId, attributeId);
+    }
+
+    @DeleteMapping("/attributes/{id}")
+    public void deleteAttribute(@PathVariable Long id){
+        productService.deleteAttribute(id);
+    }
+
+
 }
