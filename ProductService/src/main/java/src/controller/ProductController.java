@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import src.model.ProductDto;
 import src.model.ProductAttributesDTO;
@@ -62,6 +63,7 @@ public class ProductController {
     @DeleteMapping("/attributes/{id}")
     public void deleteAttribute(@PathVariable Long id){
         productService.deleteAttribute(id);
+        ResponseEntity.accepted();
     }
 
 
