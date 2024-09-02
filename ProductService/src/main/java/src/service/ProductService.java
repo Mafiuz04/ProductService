@@ -2,7 +2,6 @@ package src.service;
 
 import lombok.RequiredArgsConstructor;
 import src.exception.ProductServiceException;
-import lombok.AllArgsConstructor;
 import src.mapper.ProductAttributesMapper;
 import src.mapper.ProductMapper;
 import org.springframework.data.domain.Pageable;
@@ -102,7 +101,7 @@ public class ProductService {
     }
 
     public void deleteAttribute(Long id) {
-        ProductAttributes attribute = attributesRepository.findById(id)
+        attributesRepository.findById(id)
                 .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
         attributesRepository.deleteById(id);
         ResponseEntity.accepted();
