@@ -1,1 +1,13 @@
-C:\Users\yamah\Desktop\Projekt końcowy\ProductService\src\main\java\src\ProductService\ProductServiceApplication.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\controller\ProductController.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\exception\ProductServiceException.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\handler\ProductServiceHandler.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\mapper\ProductAttributesMapper.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\mapper\ProductMapper.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\model\Product.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\model\ProductAttributes.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\model\ProductAttributesDTO.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\model\ProductDto.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\ProductServiceApplication.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\repository\ProductAttributesRepository.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\repository\ProductRepository.java
+C:\Users\yamah\Desktop\Projekt końcowy\ProductService\14\ProductService\src\main\java\src\service\ProductService.java

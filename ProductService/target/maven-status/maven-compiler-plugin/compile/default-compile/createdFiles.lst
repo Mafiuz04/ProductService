@@ -1,1 +1,15 @@
-src\ProductService\ProductServiceApplication.class
+src\mapper\ProductAttributesMapperImpl.class
+src\controller\ProductController.class
+src\repository\ProductAttributesRepository.class
+src\exception\ProductServiceException.class
+src\mapper\ProductAttributesMapper.class
+src\model\ProductAttributes.class
+src\repository\ProductRepository.class
+src\service\ProductService.class
+src\model\ProductDto.class
+src\ProductServiceApplication.class
+src\model\ProductAttributesDTO.class
+src\model\Product.class
+src\mapper\ProductMapperImpl.class
+src\handler\ProductServiceHandler.class
+src\mapper\ProductMapper.class
