@@ -24,7 +24,7 @@ public class ProductAttributes {
     private String attributeName;
     @Column(nullable = false)
     private String attributeValue;
-    @ManyToMany(mappedBy = "attributes")
+    @ManyToMany(mappedBy = "attributes",cascade = CascadeType.ALL)
     private Set<Product> products = new HashSet<>();
 
     @Override

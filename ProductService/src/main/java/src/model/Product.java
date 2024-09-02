@@ -23,7 +23,7 @@ public class Product {
     private BigDecimal price;
     @Column(nullable = false)
     private String type;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "product_attribute",
             joinColumns = @JoinColumn(name = "product_id"),

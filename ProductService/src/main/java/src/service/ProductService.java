@@ -1,5 +1,6 @@
 package src.service;
 
+import lombok.RequiredArgsConstructor;
 import src.exception.ProductServiceException;
 import lombok.AllArgsConstructor;
 import src.mapper.ProductAttributesMapper;
@@ -16,7 +17,7 @@ import src.repository.ProductRepository;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductMapper productMapper;
@@ -68,7 +69,7 @@ public class ProductService {
 
     @Transactional
     public ProductAttributesDTO createAttribute(ProductAttributesDTO attribute) {
-        if(attributesRepository.existsByAttributes(attribute.getType(),attribute.getAttributeName(),attribute.getAttributeValue())){
+        if (attributesRepository.existsByAttributes(attribute.getType(), attribute.getAttributeName(), attribute.getAttributeValue())) {
             throw new ProductServiceException("ProductAttribute already exist in shop", HttpStatus.BAD_REQUEST);
         }
         attribute.setType(attribute.getType().toLowerCase());
@@ -86,12 +87,9 @@ public class ProductService {
     public ProductDto addAttributeToProduct(Long productId, Long attributeId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductServiceException("Product with given Id does not exist", HttpStatus.BAD_REQUEST));
-        if (!product.getAttributes().isEmpty()) {
-            throw new ProductServiceException("Product has assigned attributes", HttpStatus.BAD_REQUEST);
-        }
         ProductAttributes attribute = attributesRepository.findById(attributeId)
                 .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
-        if(!isItTheSameType(product,attribute)){
+        if (!isItTheSameType(product, attribute)) {
             throw new ProductServiceException("You can not add this attribute,wrong type", HttpStatus.BAD_REQUEST);
         }
         Set<ProductAttributes> attributes = product.getAttributes();
@@ -106,16 +104,11 @@ public class ProductService {
     public void deleteAttribute(Long id) {
         ProductAttributes attribute = attributesRepository.findById(id)
                 .orElseThrow(() -> new ProductServiceException("Attribute with given ID does not exist", HttpStatus.BAD_REQUEST));
-        List<Product> productsByAttribute = productRepository.findProductsByAttribute(attribute.getAttributeName(), attribute.getAttributeValue(), attribute.getType());
-        for (Product product : productsByAttribute) {
-            product.getAttributes().removeIf(a -> a.getId().equals(id));
-            productRepository.saveAndFlush(product);
-        }
         attributesRepository.deleteById(id);
         ResponseEntity.accepted();
     }
 
-    private boolean isItTheSameType(Product product,ProductAttributes attribute){
+    private boolean isItTheSameType(Product product, ProductAttributes attribute) {
         return product.getType().equals(attribute.getType());
     }
 }

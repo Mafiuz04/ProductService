@@ -46,7 +46,7 @@ public class ProductController {
     }
 
     @PostMapping("/attributes")
-    public ProductAttributesDTO addAttribute( @RequestBody ProductAttributesDTO attributes) {
+    public ProductAttributesDTO addAttribute(@RequestBody ProductAttributesDTO attributes) {
         return productService.createAttribute(attributes);
     }
 
@@ -56,15 +56,13 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId}/{attributeId}")
-    public ProductDto addAttributeToProduct(@PathVariable Long productId,@PathVariable Long attributeId){
+    public ProductDto addAttributeToProduct(@PathVariable Long productId, @PathVariable Long attributeId) {
         return productService.addAttributeToProduct(productId, attributeId);
     }
 
     @DeleteMapping("/attributes/{id}")
-    public void deleteAttribute(@PathVariable Long id){
+    public void deleteAttribute(@PathVariable Long id) {
         productService.deleteAttribute(id);
         ResponseEntity.accepted();
     }
-
-
 }
